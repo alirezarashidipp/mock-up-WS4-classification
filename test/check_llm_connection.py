@@ -2,10 +2,10 @@
 
 import unittest
 
-from app.classification import PROMPT_FILE, classify_row, load_prompt
-from app.llm_connection import llm_connection
-from app.models import COLUMNS, OUTPUT_COLUMNS
-from app.prepare_fields import prepare_fields
+from main import PROMPT_FILE, load_prompt
+from app.llm_connection import llm_connection, request_classification
+from app.read import COLUMNS, prepare_fields
+from app.validation import validate_output
 
 
 class LLMConnectionTest(unittest.TestCase):
@@ -22,7 +22,8 @@ class LLMConnectionTest(unittest.TestCase):
                 raise ValueError("The connection check needs at least one included synthetic incident field.")
             prompt = load_prompt(PROMPT_FILE)
             with llm_connection() as (client, model):
-                result = classify_row(client, model, fields, prompt)
+                response = request_classification(client, model, fields, prompt)
+                result = validate_output(response)
         except Exception as error:
             # Provider and validation errors may contain credentials or input values.
             raise AssertionError(
@@ -34,7 +35,7 @@ class LLMConnectionTest(unittest.TestCase):
             result,
             "The model response was empty, refused, incomplete, or failed classification validation.",
         )
-        accountability = getattr(result, OUTPUT_COLUMNS["accountability"])
+        accountability = result.accountability
         self.assertIn(accountability, ("HSBC", "SUPPLIER", "UNCERTAIN"))
         print("Connection check passed: the synthetic request returned a valid structured classification. No CSV files were read or written.")
 
