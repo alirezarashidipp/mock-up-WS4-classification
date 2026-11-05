@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+/data/*
+!/data/input/
+!/data/output/
+/data/input/*
+/data/output/*
+!/data/input/.gitkeep
+!/data/output/.gitkeep
+/input/
+/classfication_output/
+*.[cC][sS][vV]
