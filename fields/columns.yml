@@ -121,26 +121,3 @@ definitions:
   INCIDENT_WORK_NOTES: "Timestamped incident work-log entries containing operational updates, investigation observations, and impact details."
   PROBLEM_WORK_NOTES: "Timestamped problem work-log entries containing investigation updates, task notifications, and progress details."
   ADDITIONAL_COMMENTS: "Additional recorded comments providing incident context, communications, or follow-up information."
-
-# Semantic role -> model response and CSV column name. Preserve this order.
-output:
-  affected_service: llm_affected_service
-  incident_country: llm_incident_country
-  affected_party: llm_affected_party
-  business_impact: llm_business_impact
-  resolving_party: llm_resolving_party
-  restoration_action: llm_restoration_action
-  evidence_columns: llm_evidence_columns
-  citations: llm_citations
-  root_cause: llm_root_cause
-  source_consistency: llm_source_consistency
-  accountability_rationale: llm_accountability_rationale
-  accountability: llm_accountability
-  attribution_evidence_strength: llm_attribution_evidence_strength
-  accountability_confidence: llm_accountability_confidence
-  hsbc_responsible_function: llm_hsbc_responsible_function
-  supplier_name: llm_supplier_name
-  supplier_name_rationale: llm_supplier_name_rationale
-  supplier_product_or_service: llm_supplier_product_or_service
-  supplier_action_or_failure: llm_supplier_action_or_failure
-  supplier_additional_info: llm_supplier_additional_info

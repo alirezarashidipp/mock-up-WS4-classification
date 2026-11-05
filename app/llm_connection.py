@@ -1,3 +1,4 @@
+import json
 import os
 from contextlib import contextmanager
 from pathlib import Path
@@ -6,6 +7,8 @@ from azure.core.exceptions import AzureError
 from azure.identity import EnvironmentCredential, get_bearer_token_provider
 from dotenv import load_dotenv
 from openai import AzureOpenAI, OpenAI, OpenAIError
+
+from app.schema import response_schema
 
 
 @contextmanager
@@ -53,3 +56,27 @@ def llm_connection():
             max_retries=1,
         ) as client:
             yield client, os.environ["AZURE_OPENAI_DEPLOYMENT"]
+
+
+def request_classification(client, model, fields, prompt):
+    try:
+        temperature = float(os.getenv("LLM_TEMPERATURE", "0.7"))
+    except ValueError:
+        raise ValueError("LLM_TEMPERATURE must be a number between 0 and 2.") from None
+    if not 0 <= temperature <= 2:
+        raise ValueError("LLM_TEMPERATURE must be a number between 0 and 2.")
+
+    schema = response_schema()
+    return client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": json.dumps(fields, ensure_ascii=False)},
+        ],
+        response_format={
+            "type": "json_schema",
+            "json_schema": {"name": "Classification", "strict": True, "schema": schema},
+        },
+        temperature=temperature,
+        store=False,
+    )
